@@ -6,6 +6,8 @@ export interface Package {
     versions: {
       [version: string]: string[];
     };
+    url: string;
+    version: string;
   }
   
   export interface Manifest {

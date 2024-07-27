@@ -2,6 +2,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Outlet } from 'react-router-dom';
 import { Search } from './components/compositions/search';
+import { H2 } from './components/ui/typography';
 
 
 const navigation = [
@@ -16,30 +17,23 @@ function classNames(...classes: (string | undefined | null | false)[]): string {
 export default function Layout() {
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
       <div className="min-h-full">
         <Disclosure as="nav" className="border-b border-gray-200 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="flex flex-shrink-0 items-center">
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=slate&shade=600"
-                    className="block h-8 w-auto lg:hidden"
-                  />
-                  <img
-                    alt="Your Company"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=slate&shade=600"
-                    className="hidden h-8 w-auto lg:block"
-                  />
+                <H2>
+          <code>
+            <a
+              href="https://docs.micropython.org/en/latest/reference/packages.html"
+              target='_blank'
+              className="underline text-blue-400"
+            >
+              mip
+            </a>
+          </code>
+        </H2>
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                   {navigation.map((item) => (

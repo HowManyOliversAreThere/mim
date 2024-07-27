@@ -17,7 +17,7 @@ export function DataService({ children }: PropsWithChildren): ReactNode {
   const [data, setData] = useState<Manifest | null>(null);
 
   const handleFetchData: () => Promise<Manifest> = async () => {
-    const dt = await fetch("https://micropython.org/pi/v2/index.json").then((res) => res.json());
+    const dt = await fetch("https://wb5lsudgvpt4f4j4pxomg5z3ui0dcgjt.lambda-url.ap-southeast-2.on.aws/").then((res) => res.json());
     setData(dt);
     return dt;
   };
@@ -29,7 +29,7 @@ export function DataService({ children }: PropsWithChildren): ReactNode {
 
   useEffect(() => {
     handleFetchData();
-  });
+  }, []);
 
   return (
     <DataContext.Provider value={dataContext}>

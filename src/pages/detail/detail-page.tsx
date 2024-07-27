@@ -20,16 +20,23 @@ export function PackageDetailPage() {
         if (!item) {
             return;
         }
-        fetch(`https://raw.githubusercontent.com/micropython/micropython/master/README.md`)
+
+
+        //https://github.com/micropython/micropython-lib/blob/master/micropython/aioespnow/README.md
+        //https://raw.githubusercontent.com/micropython/micropython-lib/master/micropython/aioespnow/README.md
+
+        const readme = item.url.replace("github.com", "raw.githubusercontent.com").replace('/blob', '').replace('/tree', '') + '/README.md';
+        console.log(readme);
+        fetch(readme)
             .then((res) => res.text())
             .then(setMarkdown);
     }, [item]);
 
     return (
         <div className="flex flex-col gap-y-8">
-            <div className="flex w-full max-w-7xl items-start gap-x-8">
-                <aside className="sticky top-8 hidden w-96 shrink-0 lg:block">{item && <PackageInfo pkg={item} />}</aside>
-                <main className="flex-1"><div className="lg:hidden">{item && <PackageInfo pkg={item} />}</div><ReactMarkdown className='markdown' remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown></main>
+            <div className="flex w-full items-start gap-x-8">
+                <aside className="sticky top-8 hidden max-w-96 shrink-0 lg:block">{item && <PackageInfo pkg={item} />}</aside>
+                <main className="flex-1"><div className="lg:hidden">{item && <PackageInfo pkg={item} />}</div><MarkdownComp markdown={markdown}/></main>
             </div>
         </div>
     );
@@ -37,18 +44,23 @@ export function PackageDetailPage() {
 
 function PackageInfo({ pkg }: { pkg: Package }) {
     return (
-        <>
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-y-4 gap-x-8">
-                <div>
+        <div className="flex flex-col w-full gap-y-4">
+        <div>
                     <h1 className="text-3xl font-bold">{pkg.name}</h1>
                     <p className="text-lg text-slate-500">{pkg.description}</p>
                 </div>
-                <PackageInfoData name="Install"><InstallCommand packageName={pkg.name} /></PackageInfoData>
-                <PackageInfoData name="OTA Install"><InstallCommand packageName={pkg.name} ota={true} /></PackageInfoData>
-                <PackageInfoData name="Author">{pkg.author.length === 0 ? '-' : pkg.author}</PackageInfoData>
-                <PackageInfoData name="License">{pkg.license}</PackageInfoData>
+            <div className="flex flex-col lg:flex-col gap-y-4 gap-x-8">
+                <div className="flex flex-col sm:flex-row lg:flex-col gap-y-4 gap-x-8">
+                    <PackageInfoData name="Install"><InstallCommand packageName={pkg.name} /></PackageInfoData>
+                    <PackageInfoData name="OTA Install"><InstallCommand packageName={pkg.name} ota={true} /></PackageInfoData>
+                </div>
+                <div className="flex flex-row lg:flex-col gap-y-4 gap-x-8">
+                    <PackageInfoData name="Version">{pkg.version}</PackageInfoData>
+                    <PackageInfoData name="Author">{pkg.author.length === 0 ? '-' : pkg.author}</PackageInfoData>
+                    <PackageInfoData name="License">{pkg.license}</PackageInfoData>
+                </div>
             </div>
-        </>
+        </div>
     );
 }
 
@@ -74,5 +86,33 @@ function InstallCommand({ packageName, ota = false }: { packageName: string, ota
             <div onClick={() => handleCopy} className="hover:text-slate-900 text-slate-500 cursor-pointer"><CopyIcon size={16} /></div>
         </div>
         </div>
+    );
+}
+
+function MarkdownComp({ markdown }: { markdown: string | null }) {
+    return (
+        <ReactMarkdown
+            className='markdown w-full'
+            remarkPlugins={[remarkGfm]}
+            components={{
+                code({ className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || '');
+                    return match ? (
+                        <pre className={className}>
+                            <code className={`language-${match[1]}`}>{children}</code>
+                        </pre>
+                    ) : (
+                        <code className={className} {...props}>
+                            {children}
+                        </code>
+                    );
+                },
+                pre({ children }) {
+                    return <pre className="code-block">{}</pre>;
+                }
+            }}
+        >
+            {markdown}
+        </ReactMarkdown>
     );
 }
