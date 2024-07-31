@@ -4,10 +4,12 @@ import { Outlet } from 'react-router-dom';
 import { Search } from './components/compositions/search';
 import { H2 } from './components/ui/typography';
 
-
-const navigation = [
-  { name: 'Home', href: '#', current: true },
-  { name: 'About', href: '#', current: false },
+interface NavigationItem {
+  name: string;
+  path: string;
+}
+const navigation: NavigationItem[] = [
+  { name: 'Packages', path: '/'},
 ]
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
@@ -15,6 +17,12 @@ function classNames(...classes: (string | undefined | null | false)[]): string {
   }
 
 export default function Layout() {
+  const currentPath = window.location.pathname;
+
+  function checkIsCurrentPage(target: NavigationItem): boolean {
+    return currentPath.includes(target.path);
+  }
+
   return (
     <>
       <div className="min-h-full">
@@ -39,10 +47,10 @@ export default function Layout() {
                   {navigation.map((item) => (
                     <a
                       key={item.name}
-                      href={item.href}
-                      aria-current={item.current ? 'page' : undefined}
+                      href={item.path}
+                      aria-current={checkIsCurrentPage(item)? 'page' : undefined}
                       className={classNames(
-                        item.current
+                        checkIsCurrentPage(item)
                           ? 'border-slate-900 text-gray-900'
                           : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                         'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
@@ -74,10 +82,10 @@ export default function Layout() {
                 <DisclosureButton
                   key={item.name}
                   as="a"
-                  href={item.href}
-                  aria-current={item.current ? 'page' : undefined}
+                  href={item.path}
+                  aria-current={checkIsCurrentPage(item) ? 'page' : undefined}
                   className={classNames(
-                    item.current
+                    checkIsCurrentPage(item)
                       ? 'border-slate-500 bg-slate-50 text-slate-700'
                       : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800',
                     'block border-l-4 py-2 pl-3 pr-4 text-base font-medium',

@@ -21,14 +21,15 @@ export function PackageDetailPage() {
             return;
         }
 
-
-        //https://github.com/micropython/micropython-lib/blob/master/micropython/aioespnow/README.md
-        //https://raw.githubusercontent.com/micropython/micropython-lib/master/micropython/aioespnow/README.md
-
         const readme = item.url.replace("github.com", "raw.githubusercontent.com").replace('/blob', '').replace('/tree', '') + '/README.md';
-        console.log(readme);
         fetch(readme)
-            .then((res) => res.text())
+            .then((res) => {
+                if (res.status === 200) {
+                return res.text();
+                } else {
+                    return null;
+                }
+            })
             .then(setMarkdown);
     }, [item]);
 
@@ -96,19 +97,12 @@ function MarkdownComp({ markdown }: { markdown: string | null }) {
             remarkPlugins={[remarkGfm]}
             components={{
                 code({ className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    return match ? (
-                        <pre className={className}>
-                            <code className={`language-${match[1]}`}>{children}</code>
-                        </pre>
-                    ) : (
-                        <code className={className} {...props}>
-                            {children}
-                        </code>
-                    );
+                    return <code className={`${className} `} {...props}>
+                    {children}
+                </code>
                 },
                 pre({ children }) {
-                    return <pre className="code-block">{}</pre>;
+                    return <div className="w-full"><div className="overflow-scroll flex-shrink-0"><pre>{children}</pre></div></div>;
                 }
             }}
         >

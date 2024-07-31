@@ -4,6 +4,7 @@ import { H1, Lead } from "@/components/ui/typography";
 import { Manifest, Package } from "@/lib/manifest";
 import { useReactTable, getCoreRowModel, flexRender, ColumnDef } from "@tanstack/react-table";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
   
   const columns: ColumnDef<Package>[] = [
     {
@@ -28,6 +29,7 @@ import { useState, useEffect } from "react";
 
 export function HomePage() {
     const [manifest, setManifest] = useState<Manifest | null>(null);
+    const navigate = useNavigate();
   
     // Retrieve mip package manifest from https://micropython.org/pi/v2/index.json
     useEffect(() => {
@@ -40,6 +42,10 @@ export function HomePage() {
       columns,
       getCoreRowModel: getCoreRowModel(),
     });
+
+    const handleNavigate = (pkg: Package) => {
+      navigate(`/packages/${pkg.name}`);
+    }
   
     return (
       <div className="">
@@ -87,6 +93,8 @@ export function HomePage() {
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
+                        onClick={() => handleNavigate(row.original as Package)}
+                        className="cursor-pointer"
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>
