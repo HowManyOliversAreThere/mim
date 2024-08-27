@@ -128,6 +128,7 @@ function InstallCommand({
   const handleCopy = () => {
     navigator.clipboard.writeText(command);
   };
+
   return (
     <div>
       <div className="bg-slate-200 rounded py-2 px-4 flex flex-row items-center gap-x-4 text-sm justify-between">
@@ -135,7 +136,7 @@ function InstallCommand({
           <code>{command}</code>
         </div>
         <div
-          onClick={() => handleCopy}
+          onClick={handleCopy}
           className="hover:text-slate-900 text-slate-500 cursor-pointer"
         >
           <CopyIcon size={16} />
