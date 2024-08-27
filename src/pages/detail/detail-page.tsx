@@ -5,6 +5,7 @@ import { Package } from "@/lib/manifest";
 import { CopyIcon } from "lucide-react";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { Link, useParams } from "react-router-dom";
 
 import remarkGfm from "remark-gfm";
@@ -178,20 +179,21 @@ function MarkdownComp({ markdown }: { markdown: string | null }) {
       className="markdown w-full"
       remarkPlugins={[remarkGfm]}
       components={{
-        code({ className, children, ...props }) {
-          return (
-            <code className={`${className} `} {...props}>
+        code(props) {
+          // Ignoring ref and style props so they don't mess with SyntaxHighlighter
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { children, className, ref, style, ...rest } = props;
+          const match = /language-(\w+)/.exec(className || "");
+          return match ? (
+            <SyntaxHighlighter
+              {...rest}
+              children={String(children).replace(/\n$/, "")}
+              language={match[1]}
+            />
+          ) : (
+            <code className={className} {...rest}>
               {children}
             </code>
-          );
-        },
-        pre({ children }) {
-          return (
-            <div className="w-full">
-              <div className="overflow-scroll flex-shrink-0">
-                <pre>{children}</pre>
-              </div>
-            </div>
           );
         },
       }}
