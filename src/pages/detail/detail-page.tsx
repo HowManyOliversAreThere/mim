@@ -94,7 +94,7 @@ function PackageInfo({ pkg }: { pkg: Package }) {
             <InstallCommand packageName={pkg.name} ota={true} />
           </PackageInfoData>
         </div>
-        <div className="flex flex-row lg:flex-col gap-y-4 gap-x-8">
+        <div className="flex flex-row flex-wrap lg:flex-col gap-y-4 gap-x-8">
           <PackageInfoData name="Version">{pkg.version}</PackageInfoData>
           <PackageInfoData name="Author">
             {pkg.author.length === 0 ? "-" : pkg.author}
