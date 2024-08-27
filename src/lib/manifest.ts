@@ -6,7 +6,8 @@ export interface Package {
     versions: {
       [version: string]: string[];
     };
-    url: string;
+    path?: string;
+    url?: string;
     version: string;
   }
   
