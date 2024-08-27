@@ -9,6 +9,7 @@ export interface Package {
     path?: string;
     url?: string;
     version: string;
+    tags: string[];
   }
   
   export interface Manifest {

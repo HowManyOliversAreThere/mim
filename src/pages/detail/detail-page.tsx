@@ -98,6 +98,15 @@ function PackageInfo({ pkg }: { pkg: Package }) {
             {pkg.author.length === 0 ? "-" : pkg.author}
           </PackageInfoData>
           <PackageInfoData name="License">{pkg.license}</PackageInfoData>
+          {pkg.tags.length > 0 && (
+            <PackageInfoData name="Tags">
+              <div className="flex flex-wrap gap-x-2">
+                {pkg.tags.map((tag) => (
+                  <Badge key={tag}>{tag}</Badge>
+                ))}
+              </div>
+            </PackageInfoData>
+          )}
         </div>
       </div>
     </div>

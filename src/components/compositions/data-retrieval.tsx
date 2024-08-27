@@ -24,6 +24,13 @@ export function DataService({ children }: PropsWithChildren): ReactNode {
 
   const handleFetchData: () => Promise<Manifest> = async () => {
     const dt = await fetch(manifestUrl).then((res) => res.json());
+    for (const pkg of dt.packages) {
+      if (pkg.path) {
+        pkg.tags = pkg.path.split("/").slice(0, -1);
+      } else {
+        pkg.tags = [];
+      }
+    }
     setData(dt);
     return dt;
   };
