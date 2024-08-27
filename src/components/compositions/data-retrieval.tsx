@@ -12,10 +12,7 @@ interface DataContextType {
   fetchData: () => Promise<Manifest>;
 }
 
-// TODO: replace once path added
-// const manifestUrl = "https://micropython.org/pi/v2/index.json";
-const manifestUrl =
-  "https://wb5lsudgvpt4f4j4pxomg5z3ui0dcgjt.lambda-url.ap-southeast-2.on.aws/";
+const manifestUrl = "https://micropython.org/pi/v2/index.json";
 
 export const DataContext = createContext<DataContextType>({
   data: null,
