@@ -72,11 +72,11 @@ export function HomePage() {
       </Lead>
       <div className="w-full flex-grow">
         {dataContext.data === null ? (
-          <div className="m-auto">
+          <div className="w-full flex justify-center items-center h-72">
             <LoadingSpinner />
           </div>
         ) : (
-          <div className="rounded-md border">
+          <div className="rounded-md border mt-4">
             <Table>
               <TableHeader className="bg-slate-100">
                 {table.getHeaderGroups().map((headerGroup) => (
