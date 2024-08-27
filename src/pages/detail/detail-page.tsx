@@ -1,10 +1,11 @@
 import { DataContext } from "@/components/compositions/data-retrieval";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { Package } from "@/lib/manifest";
 import { CopyIcon } from "lucide-react";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
@@ -98,6 +99,18 @@ function PackageInfo({ pkg }: { pkg: Package }) {
             {pkg.author.length === 0 ? "-" : pkg.author}
           </PackageInfoData>
           <PackageInfoData name="License">{pkg.license}</PackageInfoData>
+          {pkg.path && (
+            <PackageInfoData name="Source">
+              <Link
+                to={`https://github.com/micropython/micropython-lib/tree/master/${pkg.path}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={badgeVariants({ variant: "outline" })}
+              >
+                Github
+              </Link>
+            </PackageInfoData>
+          )}
           {pkg.tags.length > 0 && (
             <PackageInfoData name="Tags">
               <div className="flex flex-wrap gap-x-2">
