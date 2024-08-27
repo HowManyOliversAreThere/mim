@@ -61,6 +61,8 @@ export function HomePage() {
           <a
             href="https://docs.micropython.org/en/latest/reference/packages.html"
             className="underline text-blue-400"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             mip
           </a>
