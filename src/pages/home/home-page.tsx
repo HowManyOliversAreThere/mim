@@ -1,4 +1,5 @@
 import { DataContext } from "@/components/compositions/data-retrieval";
+import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
@@ -28,6 +29,17 @@ const columns: ColumnDef<Package>[] = [
     accessorKey: "author",
     header: "Author",
     cell: ({ row }) => <div>{row.getValue("author") || "-"}</div>,
+  },
+  {
+    accessorKey: "tags",
+    header: "Tags",
+    cell: ({ row }) => (
+      <div className="flex flex-row gap-2">
+        {(row.getValue("tags") as string[]).map((tag) => (
+          <Badge key={tag}>{tag}</Badge>
+        ))}
+      </div>
+    ),
   },
   {
     accessorKey: "license",
