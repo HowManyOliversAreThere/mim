@@ -1,4 +1,5 @@
 import { DataContext } from "@/components/compositions/data-retrieval";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { Package } from "@/lib/manifest";
 import { CopyIcon } from "lucide-react";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ export function PackageDetailPage() {
   );
 
   const [markdown, setMarkdown] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!item) {
@@ -41,19 +43,32 @@ export function PackageDetailPage() {
             return null;
           }
         })
-        .then(setMarkdown);
+        .then(setMarkdown)
+        .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-  }, [item]);
+  }, [item, markdown]);
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="flex w-full items-start gap-x-8">
+      <div className="flex w-full items-start gap-x-8 min-h-dvh">
         <aside className="sticky top-8 hidden max-w-96 shrink-0 lg:block">
           {item && <PackageInfo pkg={item} />}
         </aside>
-        <main className="flex-1">
+        <main className="w-full h-full">
           <div className="lg:hidden">{item && <PackageInfo pkg={item} />}</div>
-          <MarkdownComp markdown={markdown} />
+          {isLoading ? (
+            <div className="flex justify-center items-center h-72">
+              <LoadingSpinner />
+            </div>
+          ) : markdown === null ? (
+            <div className="text-center mt-4">
+              No README found for this package 😢
+            </div>
+          ) : (
+            <MarkdownComp markdown={markdown} />
+          )}
         </main>
       </div>
     </div>
