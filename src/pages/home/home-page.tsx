@@ -1,5 +1,6 @@
 import { DataContext } from "@/components/compositions/data-retrieval";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
@@ -16,50 +17,57 @@ import {
   getCoreRowModel,
   flexRender,
   ColumnDef,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
-const columns: ColumnDef<Package>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "author",
-    header: "Author",
-    cell: ({ row }) => <div>{row.getValue("author") || "-"}</div>,
-  },
-  {
-    accessorKey: "tags",
-    header: "Tags",
-    cell: ({ row }) => (
-      <div className="flex flex-row gap-2">
-        {(row.getValue("tags") as string[]).map((tag) => (
-          <Badge key={tag}>{tag}</Badge>
-        ))}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "license",
-    header: "License",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => <div>{row.getValue("description") || "-"}</div>,
-  },
-];
 
 export function HomePage() {
   const dataContext = useContext(DataContext);
   const navigate = useNavigate();
 
+  const columns: ColumnDef<Package>[] = [
+    {
+      id: "name",
+      accessorKey: "name",
+      header: "Name",
+      enableColumnFilter: true,
+      filterFn: "includesString",
+    },
+    {
+      accessorKey: "author",
+      header: "Author",
+      cell: ({ row }) => <div>{row.getValue("author") || "-"}</div>,
+    },
+    {
+      accessorKey: "tags",
+      header: "Tags",
+      cell: ({ row }) => (
+        <div className="flex flex-row gap-2">
+          {(row.getValue("tags") as string[]).map((tag) => (
+            <Badge key={tag}>{tag}</Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "license",
+      header: "License",
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => <div>{row.getValue("description") || "-"}</div>,
+    },
+  ];
+
   const table = useReactTable({
     data: dataContext.data?.packages ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    enableColumnFilters: true,
+    enableFilters: true,
   });
 
   const handleNavigate = (pkg: Package) => {
@@ -67,7 +75,7 @@ export function HomePage() {
   };
 
   return (
-    <div className="">
+    <div className="flex flex-col gap-1">
       <H1>
         <code>
           <a
@@ -90,56 +98,68 @@ export function HomePage() {
             <LoadingSpinner />
           </div>
         ) : (
-          <div className="rounded-md border mt-4">
-            <Table>
-              <TableHeader className="bg-slate-100">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                      onClick={() => handleNavigate(row.original as Package)}
-                      className="cursor-pointer"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
+          <>
+            <div className="flex flex-row">
+              <Input
+                type="search"
+                placeholder="🔎 Search"
+                onChange={(e) =>
+                  table.getColumn("name")?.setFilterValue(() => e.target.value)
+                }
+                className="w-96"
+              />
+            </div>
+            <div className="rounded-md border mt-4">
+              <Table>
+                <TableHeader className="bg-slate-100">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
                       ))}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                        onClick={() => handleNavigate(row.original as Package)}
+                        className="cursor-pointer"
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </div>
     </div>
