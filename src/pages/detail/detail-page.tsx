@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 
 import remarkGfm from "remark-gfm";
+import { toast } from "sonner";
 
 export function PackageDetailPage() {
   const dataContext = useContext(DataContext);
@@ -127,6 +128,9 @@ function InstallCommand({
     : `mpremote mip install ${packageName}`;
   const handleCopy = () => {
     navigator.clipboard.writeText(command);
+    toast.success(
+      `${ota ? "OTA install" : "Install"} command copied to clipboard`
+    );
   };
 
   return (
